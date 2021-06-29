@@ -1,25 +1,5 @@
 # Deep High-Resolution Representation Learning for Human Pose Estimation (accepted to CVPR2019)
 
-## Introduction
-This is an official pytorch implementation of [*Deep High-Resolution Representation Learning for Human Pose Estimation*](https://arxiv.org/abs/1902.09212). 
-In this work, we are interested in the human pose estimation problem with a focus on learning reliable high-resolution representations. Most existing methods **recover high-resolution representations from low-resolution representations** produced by a high-to-low resolution network. Instead, our proposed network **maintains high-resolution representations** through the whole process.
-We start from a high-resolution subnetwork as the first stage, gradually add high-to-low resolution subnetworks one by one to form more stages, and connect the mutli-resolution subnetworks **in parallel**. We conduct **repeated multi-scale fusions** such that each of the high-to-low resolution representations receives information from other parallel representations over and over, leading to rich high-resolution representations. As a result, the predicted keypoint heatmap is potentially more accurate and spatially more precise. We empirically demonstrate the effectiveness of our network through the superior pose estimation results over two benchmark datasets: the COCO keypoint detection dataset and the MPII Human Pose dataset. </br>
-
-![Illustrating the architecture of the proposed HRNet](/figures/hrnet.png)
-## Main Results
-### Results on MPII val
-| Arch               | Head | Shoulder | Elbow | Wrist |  Hip | Knee | Ankle | Mean | Mean@0.1 |
-|--------------------|------|----------|-------|-------|------|------|-------|------|----------|
-| pose_resnet_50     | 96.4 |     95.3 |  89.0 |  83.2 | 88.4 | 84.0 |  79.6 | 88.5 |     34.0 |
-| pose_resnet_101    | 96.9 |     95.9 |  89.5 |  84.4 | 88.4 | 84.5 |  80.7 | 89.1 |     34.0 |
-| pose_resnet_152    | 97.0 |     95.9 |  90.0 |  85.0 | 89.2 | 85.3 |  81.3 | 89.6 |     35.0 |
-| **pose_hrnet_w32** | 97.1 |     95.9 |  90.3 |  86.4 | 89.1 | 87.1 |  83.3 | 90.3 |     37.7 |
-
-### Note:
-- Flip test is used.
-- Input size is 256x256
-- pose_resnet_[50,101,152] is our previous work of [*Simple Baselines for Human Pose Estimation and Tracking*](http://openaccess.thecvf.com/content_ECCV_2018/html/Bin_Xiao_Simple_Baselines_for_ECCV_2018_paper.html)
-
 ### Results on COCO val2017 with detector having human AP of 56.4 on COCO val2017 dataset
 | Arch               | Input size | #Params | GFLOPs |    AP | Ap .5 | AP .75 | AP (M) | AP (L) |    AR | AR .5 | AR .75 | AR (M) | AR (L) |
 |--------------------|------------|---------|--------|-------|-------|--------|--------|--------|-------|-------|--------|--------|--------|
@@ -138,22 +118,6 @@ The code is developed using python 3.6 on Ubuntu 16.04. NVIDIA GPUs are needed. 
    ```
    
 ### Data preparation
-**For MPII data**, please download from [MPII Human Pose Dataset](http://human-pose.mpi-inf.mpg.de/). The original annotation files are in matlab format. We have converted them into json format, you also need to download them from [OneDrive](https://1drv.ms/f/s!AhIXJn_J-blW00SqrairNetmeVu4) or [GoogleDrive](https://drive.google.com/drive/folders/1En_VqmStnsXMdldXA6qpqEyDQulnmS3a?usp=sharing).
-Extract them under {POSE_ROOT}/data, and make them look like this:
-```
-${POSE_ROOT}
-|-- data
-`-- |-- mpii
-    `-- |-- annot
-        |   |-- gt_valid.mat
-        |   |-- test.json
-        |   |-- train.json
-        |   |-- trainval.json
-        |   `-- valid.json
-        `-- images
-            |-- 000001163.jpg
-            |-- 000003072.jpg
-```
 
 **For COCO data**, please download from [COCO download](http://cocodataset.org/#download), 2017 Train/Val is needed for COCO keypoints training and validation. We also provide person detection result of COCO val2017 and test-dev2017 to reproduce our multi-person pose estimation results. Please download from [OneDrive](https://1drv.ms/f/s!AhIXJn_J-blWzzDXoz5BeFl8sWM-) or [GoogleDrive](https://drive.google.com/drive/folders/1fRUDNUDxe9fjqcRZ2bnF_TKMlO0nB_dk?usp=sharing).
 Download and extract them under {POSE_ROOT}/data, and make them look like this:
@@ -182,22 +146,6 @@ ${POSE_ROOT}
 
 ### Training and Testing
 
-#### Testing on MPII dataset using model zoo's models([GoogleDrive](https://drive.google.com/drive/folders/1hOTihvbyIxsm5ygDpbUuJ7O_tzv4oXjC?usp=sharing) or [OneDrive](https://1drv.ms/f/s!AhIXJn_J-blW231MH2krnmLq5kkQ))
- 
-
-```
-python tools/test.py \
-    --cfg experiments/mpii/hrnet/w32_256x256_adam_lr1e-3.yaml \
-    TEST.MODEL_FILE models/pytorch/pose_mpii/pose_hrnet_w32_256x256.pth
-```
-
-#### Training on MPII dataset
-
-```
-python tools/train.py \
-    --cfg experiments/mpii/hrnet/w32_256x256_adam_lr1e-3.yaml
-```
-
 #### Testing on COCO val2017 dataset using model zoo's models([GoogleDrive](https://drive.google.com/drive/folders/1hOTihvbyIxsm5ygDpbUuJ7O_tzv4oXjC?usp=sharing) or [OneDrive](https://1drv.ms/f/s!AhIXJn_J-blW231MH2krnmLq5kkQ))
  
 
@@ -216,24 +164,12 @@ python tools/train.py \
 ```
 ### Detection+Estimation
 
-<<<<<<< HEAD
-### Detection+Estimation
-
-=======
->>>>>>> 60a055c4a572b83958050f46fc65d394e965eeb1
 ```
 python tools/detectron_test.py \
     --cfg experiments/coco/hrnet/w32_256x192_adam_lr1e-3.yaml \
     TEST.MODEL_FILE models/pytorch/pose_coco/pose_hrnet_w32_256x192.pth
 
 ```
-<<<<<<< HEAD
-
-=======
->>>>>>> 60a055c4a572b83958050f46fc65d394e965eeb1
-
-### Other applications
-Many other dense prediction tasks, such as segmentation, face alignment and object detection, etc. have been benefited by HRNet. More information can be found at [Deep High-Resolution Representation Learning](https://jingdongwang2017.github.io/Projects/HRNet/).
 
 ### Citation
 If you use our code or models in your research, please cite with:
